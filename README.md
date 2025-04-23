@@ -6,16 +6,16 @@ This is the accompanying GitHub repository for the course “Introduction to Bay
 
 ## Schedule
 
-| Date       | Topic                             | Slides |
-|------------|-----------------------------------|--------|
-| 23 April   | Intro                             |        |
-| 30 April   | Getting started: `R`              |        |
-| 07 May     | No session                        |        |
-| 14 May     | Getting started: `Git` & `GitHub` |        |
-| 21/28 May  | Bayesian updating                 |        |
-| 04 June    | Bayesian data analysis workflow   |        |
-| 11/18 June | Linear models                     |        |
-| 25 June    | MCMC                              |        |
-| 02 July    | Generalized linear models         |        |
-| 09/16 July | Multilevel models                 |        |
-| 23 July    | Outro                             |        |
+| Date       | Topic                             | Slides                                                                                                |
+|------------|-----------------------------------|-------------------------------------------------------------------------------------------------------|
+| 23 April   | Intro                             | [Slides](https://www.moodle.tum.de/pluginfile.php/5653706/mod_resource/content/1/session_1_intro.pdf) |
+| 30 April   | Getting started: `R`              |                                                                                                       |
+| 07 May     | No session                        |                                                                                                       |
+| 14 May     | Getting started: `Git` & `GitHub` |                                                                                                       |
+| 21/28 May  | Bayesian updating                 |                                                                                                       |
+| 04 June    | Bayesian data analysis workflow   |                                                                                                       |
+| 11/18 June | Linear models                     |                                                                                                       |
+| 25 June    | MCMC                              |                                                                                                       |
+| 02 July    | Generalized linear models         |                                                                                                       |
+| 09/16 July | Multilevel models                 |                                                                                                       |
+| 23 July    | Outro                             |                                                                                                       |
