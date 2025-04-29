@@ -38,6 +38,20 @@ colMeans(dat)
 
 # Exercise 5
 
+sequence <- 1:5
+output <- vector('numeric', length(sequence))
+
+for (i in sequence){ 
+  
+  output[i] <- mean(dat[,i])
+  
+  }
+
+output
+
+
+# Exercise 6
+
 # install.packages("ggplot2")
 library(ggplot2)
 
@@ -60,7 +74,7 @@ ggplot(data, mapping = aes(x=value, fill = group)) + # data that should be plott
   theme_dark() # plot theme
 
 
-# Exercise 6
+# Exercise 7
 
 ggplot(data, mapping = aes(x=value, fill = group)) + # data that should be plotted
   geom_histogram(position = "identity", alpha = .5, color = "gray") + # histogram & settings
@@ -72,7 +86,8 @@ ggplot(data, mapping = aes(x=value, fill = group)) + # data that should be plott
        fill = "Group") + 
   facet_wrap(~group, nrow = 2)
 
-#Exercise 7
+
+#Exercise 8
 
 data$value_2 <- c( data[1:1000, "value"]*2 + rnorm(group_n, mean = 0) ,  
                    data[1001:2000, "value"]*-.5 + rnorm(group_n, mean = 0))
