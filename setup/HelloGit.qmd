@@ -1,0 +1,204 @@
+---
+format: gfm
+editor: 
+  markdown: 
+    wrap: sentence
+editor_options: 
+  chunk_output_type: console
+---
+
+# Prerequisites
+
+-   [x] [Git](https://git-scm.com/downloads) installed
+-   [x] [GitHub](https://github.com) account created
+
+# Hello `Git`
+
+Below, we take a few steps to get `Git` running on your machine and to allow your machine to communicate (sync) with `GitHub`.
+These steps are based on the wonderful [Happy Git and GitHub](https://happygitwithr.com/index.html) guide, but are much more minimalist with almost no details. 
+This is to give you a quick and accessible start.
+More details will of course be given, but in class. 
+For those who want to dive deeper before and get a head start, take a look into the [Happy Git and GitHub](https://happygitwithr.com/index.html) guide by Jenny Bryan or read her [intro paper](https://peerj.com/preprints/3159/).
+
+<br/><br/>
+
+**Step 1.** Check if `Git` is already installed.
+
+Open a *Terminal* on your system and enter `git --version`.
+The command should return something like `git version ...`.
+If instead the command returns something like `git: command not found`, follow the link above to install `Git`.
+
+![](screenshots/shell.png){fig-align="center"}
+
+<br/><br/>
+
+**Step 2.** Introduce yourself to `Git`.
+
+Go to the *Terminal* or *Git Bash* and run the first two commands below to enter your username and e-mail.
+Make sure you use the same credentials as you used for `GitHub`!
+If the third command below returns your username and e-mail, your good to continue.
+But first, restart your computer.
+
+``` bash
+git config --global user.name 'YOUR USERNAME'
+git config --global user.email 'YOUR EMAIL ADDRESS'
+git config --global --list
+```
+
+<br/>
+
+**Step 3.** Connect your local `Git` installation with your `GitHub` account.
+
+Open `RStudio` and install the `usethis` package.
+Run the 2nd command below to open your browser and generate a personal access token (PAT).
+(The PAT is required to create a secure connection via the HTTPS security protocol. Read more [here](https://github.com/settings/tokens).) In the browser window, provide a name for the PAT in the *Note* field (e.g., my-private-machine).
+Keep the pre-selected settings and click *Generate token*.
+This will open a new window with the PAT.
+Don't close this window!
+
+```{r eval = F}
+install.packages("usethis")
+usethis::create_github_token()
+```
+
+![](screenshots/PAT-name.png){fig-align="center"}
+
+<br/><br/>
+
+Return to `RStudio`, install the `gitcreds` package and run the 2nd command below.
+A message prompts you to enter your PAT.
+Go to the browser, copy the PAT, and paste it to the console and press *Enter*.
+
+```{r eval = F}
+install.packages("gitcreds")
+gitcreds::gitcreds_set()
+```
+
+<br/>
+
+**Step 4.** Create a *remote* repository.
+
+Go to `GitHub` and create a [new repository](https://github.com/new) (repo).
+
+-   [x] *Name*
+-   [x] *Public*
+-   [x] *Add README file*
+
+**Congrats, you just created your first (GitHub) repository!** 
+
+<br/>
+
+**Step 5.** Clone the remote repo to your computer.
+
+Click the green "\<\> Code" button and *HTTPS*.
+Copy the URL address to your clipboard.
+
+![](screenshots/repo-url.png){fig-align="center"}
+
+Go to *RStudio* and create a new Git project: *File* \> *New Project ...* \> *Version Control* \> *Git*.
+Paste the repository URL in the respective field of the pop-up window.
+The name of the remote repository will be automatically set as the name for you project folder.
+In the bottom field, indicate where on your machine you want to create the project.
+(We will also speak of this project folder as the *local* repo, which we'll keep in sync with the remote repo on `GitHub`.) 
+Click "Create project" and `RStudio` will open the project.
+
+
+![](screenshots/R-project-git.png){fig-align="center"}
+
+<br/><br/>
+
+**Congrats, you just cloned your first repository from GitHub to your machine!** 
+
+<br/>
+
+**Step 6.** Make your first commit and push to `GitHub`.
+
+
+By creating the `RStudio` project using the `GitHub` URL, you already created a connection between the local repo/project on your machine and the the remote repo on `GitHub`.
+However, this is only where it get's started.
+
+Now, take a look at the main page of your `GitHub` repo.
+You'll find a list of all files of this remote repo.
+Currently, there is only the `README.md` file.
+When clicking on this file, you'll see one line, indicating the repo title.
+`README` files are often used to share the most important information about a project with others (e.g., the purpose of the project, the project status, how to best navigate through the files, general instructions, and more).
+Because of their importance, the contents of the `README.md` file are also directly shown on the main page of your `GitHub` repo (go back to the main page to check).
+
+![](screenshots/github-readme.png){fig-align="center"}
+
+<br/><br/>
+
+Next, go back to `RStudio` and visit the *File* and *Git* pane, shown in the figure below.
+The *File* pane displays a list of all files of this local repo.
+You'll find the `README.md` file, which you synced with `GitHub` when creating this project using the `GitHub` URL (Step 5), but also a couple of other files such as `.gitignore` and `*name.Rproj`, which were automatically generated when creating this project in `RStudio`.
+The *Git* pane shows the *track and commit status* of your files: 
+
+- Two yellow `??` indicate that the file is not tracked by `Git` yet. 
+
+- A blue `M` indicates that the file is tracked, but the latest changes to this file are not *committed* to `Git` yet. 
+
+- When a project file is not shown in the `Git` pane, then `Git` ignores this file (because you said so) or the latest changes are already committed. 
+
+![](screenshots/RStudio-project.png){fig-align="center"}
+
+<br/><br/>
+
+::: {.callout-note}
+Intermezzo: What is a commit? 
+
+In a classic workflow that involves only you and your computer (and perhaps a standard cloud), you change a file (e.g., add a new code snippet or paragraph) and keep the new file version, while loosing the old version (prior the changes have been made).
+`Git` instead allows you to keep both the new version and the entire file history (that is, all changes that ever have been made to this file).
+To do this, you need to not only save a file after the recent changes, but also commit them to `Git`. 
+A commit indicates that you move from an earlier file version to a new version and keep both the old and the new version as separate "snapshots" of this file. 
+If your project progresses over time and you realize you made a big mistake some commits ago, you can just jump back to an earlier version that you were still happy with.
+All this works without `GitHub`.
+
+The connection to `GitHub` allows you to additionally store the current version and file history remotely in a cloud store (rather than just on your machine).
+This is an important feature on its own, but `GitHub` gives you many other benefits such as collaborating with others on the same project.
+You'll learn about them in class.
+:::
+
+
+Normally, you want to keep the local repo on your machine and the remote repo on `GitHub` in sync.
+Let's look at how this works.
+In `RStudio`, open the `README.md` file, write a new line, save it.
+Now, look at what changed in the `RStudio`'s `Git` pane:
+You should now see the `README.md` file and a blue `M`.
+This indicates, that you made a change to the file, but you did not commit them yet.
+That is, `Git` still considers the file without the new line as the most recent version.
+
+
+![](screenshots/readme-new-line.png){fig-align="center"}
+
+<br/><br/>
+
+Next, you want to commit the new changes to `Git`.
+To do so, first *stage* the file by ticking the box to the left of the file and then clicking the *Commit* button.
+
+![](screenshots/git-staging.png){fig-align="center"}
+
+<br/><br/>
+
+A new window opens, where you can review the changes and need to write a short and meaningful *commit message*.
+
+![](screenshots/git-commit-message.png){fig-align="center"}
+
+<br/><br/>
+
+After clicking the *Commit* button, another window opens and you should see a short message summarizing the successful commit.
+
+The file without the changes is now considered an old version (which is stored in the history) and the file with the changes is considered the current version. 
+The file should be disappeared from the `Git` pane and show up again only when you make new changes and save the file.
+
+Finally, after one or several file changes and commits---you'll likely commit more often than you push---click the green *Push* arrow (button) in the *Git* pane.
+This will sync the latest commits with the `GitHub` repo.
+As before when you committed the changes, you should see a short message in the popup window informing about a successful push to `GitHub`.
+To see that it really worked, visit *GitHub* and check if the new line shows up in the `README.md` file.
+
+**Congratulations, you made your first `Git` commit and pushed it to `GitHub`. This is huge!**
+
+
+Now that your system is set up to work with `RStudio`, `Git` and `GitHub`, we'll take the next session to learn about other relevant features of these tools, including how to use them for collaborating in coding/data analysis projects. 
+
+Looking forward to seeing you in class! :) 
+
