@@ -4,7 +4,7 @@ library(tidyverse)
 
 #read data
 
-dat <- read_csv('data/stocks.csv')
+dat <- read_csv('data/stocks.csv') 
 
 # compute returns
 
