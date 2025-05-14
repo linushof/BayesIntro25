@@ -11,8 +11,8 @@ dat <- read_csv('data/stocks.csv')
 A_return <- (dat[nrow(dat),'stock_A']-dat[1,'stock_A'])/dat[1,'stock_A'] # 10-years 
 A_ann <- (1+A_return)^(1/10)-1 # annualized
 
-B_return <- (dat[nrow(dat),'stock_B']-dat[2,'stock_B'])/dat[2,'stock_B'] # 10-years 
-B_ann <- (1+B_return^(1/10))-1 # annualized
+B_return <- (dat[nrow(dat),'stock_B']-dat[1,'stock_B'])/dat[1,'stock_B'] # 10-years 
+B_ann <- (1+B_return)^(1/10)-1 # annualized
 
 
 # visualize stocks
