@@ -7,12 +7,12 @@ This is the accompanying GitHub repository for the course “Introduction to Bay
 ## Schedule
 
 | Date | Topic | Slides |
-|----------------|----------------|-----------------------------------------|
+|------------------------|------------------------|------------------------|
 | 23 April | Intro | [Slides](https://www.moodle.tum.de/pluginfile.php/5653706/mod_resource/content/1/session_1_intro.pdf) |
 | 30 April | Getting started: `R` | [Slides](https://www.moodle.tum.de/pluginfile.php/5684980/mod_resource/content/1/session_2_getting_started_R.pdf) |
 | 07 May | No session |  |
 | 14 May | Getting started: `Git` & `GitHub` | [Slides](https://www.moodle.tum.de/pluginfile.php/5705434/mod_resource/content/1/session_3_getting_started_git.pdf) |
-| 21/28 May | Bayesian updating |  |
+| 21/28 May | Bayesian updating | [Slides (Part 1)](https://www.moodle.tum.de/pluginfile.php/5715302/mod_resource/content/1/session_4_bayesian_updating_I.pdf) |
 | 04 June | Bayesian data analysis workflow |  |
 | 11/18 June | Linear models |  |
 | 25 June | MCMC |  |
