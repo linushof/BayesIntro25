@@ -1,4 +1,3 @@
-library(tidyverse)
 
 # priors  -----------------------------------------------------
 
@@ -204,6 +203,7 @@ post_preds %>% ggplot(aes(x=L)) +
 
 # install and load packages
 library(nycflights13)
+#library(nycflights23)
 
 # Step 1: Define prior 
 
@@ -220,7 +220,8 @@ plot(x=candidates, y=prior, type = "l")
 # Step 2: Prepare data
 
 ## store flights dataset as an object 'dat'
-dat <- flights 
+dat <- nycflights13::flights
+#dat <- nycflights23::flights
 
 ## remove all columns that have a missing (NA) in columns arr_delay
 dat <- dat[!is.na(dat$arr_delay), ]
