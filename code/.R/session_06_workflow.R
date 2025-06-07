@@ -7,6 +7,7 @@ library(tidyverse)
 x_min <- -5
 x_max <- 5
 range <- seq(x_min, x_max, length.out = 100) # sample space
+range
 d <- dunif(range, min = x_min, max = x_max) # densities
 UNI <- data.frame(range, d)
 
@@ -32,7 +33,7 @@ ggplot(NORM, aes(x = range, y = d)) +
 # beta
 
 range <- seq(0, 1, length.out = 100)
-d <- dbeta(range, shape1 = 2, shape2 = 50)
+d <- dbeta(range, shape1 = 50, shape2 = 1)
 BETA <- data.frame(range, d)
 
 ggplot(BETA, aes(x = range, y = d)) +
@@ -197,3 +198,103 @@ post_preds %>% ggplot(aes(x=L)) +
   scale_x_continuous(limits = c(0,N), breaks = seq(0,N,100)) + 
   labs(x = "Number of Simulated L out of 1000",
        y = "Frequency") 
+
+
+# NYC Flights Exercise ----------------------------------------------------
+
+# install and load packages
+library(nycflights13)
+
+# Step 1: Define prior 
+
+# define possible parameter values (between 0 and 1 because we are estimating a probability)
+candidates <- seq(0,1,.01)  
+
+# prior plausibility for each candidate -- I use Beta(4,2) as I think that most flights will arrive on time
+prior <- dbeta(candidates, shape1=4, shape2=2)
+
+# plot prior
+plot(x=candidates, y=prior, type = "l")
+
+
+# Step 2: Prepare data
+
+## store flights dataset as an object 'dat'
+dat <- flights 
+
+## remove all columns that have a missing (NA) in columns arr_delay
+dat <- dat[!is.na(dat$arr_delay), ]
+
+## add binary variable (ontime), indicating whether delay was less (ontime=1) or more than 10 minutes (ontime=0) 
+dat$ontime <- ifelse(dat$arr_delay < 10, 1, 0)
+
+## compute total number of flights that were on time
+total <- sum(dat$ontime)
+
+# Step 3: Inference
+
+## compute likelhood
+lh <- dbinom(x=total, size=nrow(dat), prob=candidates)
+
+## compute posterior
+post <- lh*prior/sum(lh*prior)
+
+## plot results
+plot(x=candidates, y=post, type = "l", ylim=c(0,1)) # posterior
+lines(x=candidates, y=prior/sum(prior), col='red') # prior
+
+
+# separately for each month ---------------------------------------------------------
+
+# Step 1: Compute posteriors
+
+## prepare empty matrix to store posterior values for each candidate (rows), separately for each month (column)
+posts <- matrix(nrow = length(candidates), ncol = 12)
+
+## Compute posteriors for monthly arrival  data
+
+for(i in 1:12){
+  
+  # get data from respective month
+  dat_month <- dat[dat$month==i , ] 
+  total_month <- sum(dat_month$ontime) 
+  
+  # Bayesian inference
+  lh_month <- dbinom(x=total_month, size=nrow(dat_month), prob=candidates) #  likelihood
+  post_month <- lh_month*prior/sum(lh_month*prior) # post
+  
+  # store data in respective column
+  posts[,i] <- post_month
+  
+}
+
+
+# Step 2: Show results
+
+## load additional packages
+
+library(tidyverse) # packages/functions for data wrangling and visualizations
+library(viridis) # color palettes
+
+## prepare data frame
+results <- 
+  # merge candidates and matrix with posteriors into one data frame
+  data.frame(candidates, posts) %>% 
+  # pivot the data frame into a long format (month and posterior column instead of separate posterior columns for each month) 
+  pivot_longer(cols = X1:X12, names_to = "month", values_to = "post", names_prefix = "X")
+
+## plot data
+
+results %>% 
+  # change month column to numeric (allows automatic ordering of months in the graph) 
+  mutate(month=as.numeric(month)) %>% 
+  ggplot(aes(x=candidates, y=post, group=month, color=month, fill=month)) +
+  facet_wrap(~month, nrow=12) +
+  geom_line(linewidth=1.5, alpha=.5) +
+  scale_y_continuous(breaks = seq(0,1,.5)) +
+  labs(x='p in Binomial(N,p)', 
+       y='Posterior',
+       color='Month') + 
+  theme_minimal() + 
+  scale_color_viridis(option = 'D')
+
