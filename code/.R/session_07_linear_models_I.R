@@ -1,10 +1,12 @@
+rm(list=ls())
+
 # load packages
 library(tidyverse)
 library(rethinking)
 
 # Exercise: Summing up random variables ----------------------------------------------------------------
 
-hist(replicate(1000, sum(rbeta(100, 1,20))))
+hist(replicate(1000, sum(rbeta(100, 2,1))))
 
 # Exercise Gaussian model: Prior definition and prior predictive check  ----------------------------------------------------------
 # y ~ Normal(mu, sigma) 
@@ -15,7 +17,7 @@ range <- seq(-10, 60, length.out = 100) # range
 d <- dnorm(range, mean = 20, sd = 8) # densities
 mu <- data.frame(range, d)
 ggplot(mu, aes(x = range, y = d)) +
-  geom_line(size = 1, color = "#ff02ff") +
+  geom_line(linewidth = 1, color = "#ff02ff") +
   scale_x_continuous(limits = c(-10,60), breaks = seq(-10,60, 5)) + 
   labs(x = expression(mu), 
        y = "Density") 
@@ -26,7 +28,7 @@ range <- seq(-1, 11, length.out = 100) # sample space
 d <- dunif(range, min = 0, max = 10) # densities
 sigma <- data.frame(range, d)
 ggplot(sigma, aes(x = range, y = d)) +
-  geom_line(size = 1, color = "#ff02ff") +
+  geom_line(linewidth = 1, color = "#ff02ff") +
   scale_x_continuous(limits = c(-1,11), breaks = seq(-1,11, 1)) + 
   labs(x = expression(sigma), 
        y = "Density") 
@@ -63,12 +65,15 @@ ggplot(aes(x = pts)) +
        y = "Frequency") 
 
 ## Fit model on simulated data
-m_gauss_sim <- alist(pts ~ dnorm( mu , sigma ) ,
-                     mu ~ dnorm( 20 , 8 ) ,
-                     sigma ~ dunif( 0 , 10 ))
+m_gauss_sim <- alist(
+  #likelihood
+  pts ~ dnorm( mu , sigma ) ,
+  
+  #priors
+  mu ~ dnorm( 20 , 8 ) ,
+  sigma ~ dunif( 0 , 10 ))
 
 m_gauss_sim_fit <- quap(m_gauss_sim, data=sim_pts)
-
 m_gauss_sim_fit
 m_gauss_sim_fit@formula
 m_gauss_sim_fit@start
@@ -104,6 +109,7 @@ m_gauss_shaq_fit <- quap(
         sigma ~ dunif( 0 , 10 )) ,
   data = shaq)
 
+pairs(m_gauss_shaq_fit, pars = c("mu", "sigma"))
 # evaluate 
 
 ## posterior summaries
@@ -159,7 +165,9 @@ m_gauss_shaq_post_dens %>%
 m_gauss_shaq_post_pred <- tibble(pts = round(rnorm(nrow(m_gauss_shaq_smp), mean = m_gauss_shaq_smp$mu, sd = m_gauss_shaq_smp$sigma), 0))
 m_gauss_shaq_post_pred %>%  
   ggplot(aes(x = pts)) + 
-  geom_histogram(fill = "#ff02ff", alpha = .5, color = "#ff02ff", bins = 30) 
+  geom_histogram(fill = "#ff02ff", alpha = .5, color = "#ff02ff", bins = 30) +
+  geom_histogram(data=shaq, aes(x=PTS), fill = "yellow", alpha = .5, color = "yellow", bins = 50) 
+  
 
 
 # Exercise linear model: Bayesian workflow steps 4-7  ------------------------------------------------------------

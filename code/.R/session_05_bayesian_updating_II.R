@@ -13,22 +13,28 @@ sim_tosses <- function(n, p){
 compute_post <- function(data, candidates, n){
   
   L <- sum(data=="L") # data 
+  
   likelihood <- dbinom(L, n, prob = candidates$cp) # aka the 'likelihood'
+  
   posterior <- likelihood * candidates$prior # updating 
+  
   posterior_norm <- posterior/sum(posterior) # standardization
+  
   data.frame(candidates, lh=round(likelihood, 3), post=round(posterior_norm,3))
   
 }
 
 # simulate data
 set.seed(1671)
-n <- 9
+n <- 1000
 data <- sim_tosses(n, p = .5)
 
 # compute posterior
 
 candidates <- tibble(cp = seq(0,1,.1) , 
                      prior = rep(1/length(cp), length(cp)))
+candidates
+
 estimation <- compute_post(data, candidates, n)
 estimation
 
@@ -92,7 +98,7 @@ plot + geom_text(
 # simulate and estimate new data
 
 p <- .5
-n <- 100
+n <- 10
 candidates <- tibble(cp = seq(0,1,.01) , prior = rep(1/length(cp), length(cp)))
 
 set.seed(12123)
@@ -116,8 +122,10 @@ p + geom_area(fill = "#F8766D", alpha = 0.4)
 # Percentile intervals ----------------------------------------------------
 
 # sample from posterior
-
+estimation
 posterior_samples <- sample(estimation$cp, prob = estimation$post, size = 1e4, replace = TRUE) 
+
+median(posterior_samples)
 
 # 50%
 PI50 <- quantile(posterior_samples, probs = c(.25, .75))
