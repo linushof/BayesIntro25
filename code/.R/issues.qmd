@@ -1,0 +1,38 @@
+---
+title: "Homework Session 3: Solving issues"
+format: gfm
+---
+
+Make one or more pull request to <https://github.com/linushof/BayesIntro24> solving the specified [issues](https://github.com/linushof/BayesIntro24/issues).
+
+```{r}
+#load packages
+library(knitr)
+library(ggplot2)
+library(tidyr)
+```
+
+```{r}
+x <- rnorm(1000, 100, 20)
+y <- rnorm(1000, 90, 20)
+dat <- data.frame(x, y)
+```
+
+```{r}
+dat
+```
+
+```{r}
+ggplot(dat) +
+  geom_histogram(aes(x = x), fill = "red") + 
+  geom_histogram(aes(x = y), fill = "green")
+```
+
+```{r}
+dat_long <- data.frame(group = c(rep("x", 1000), rep("y", 1000)), 
+                       val = c(x, y))
+```
+
+```{r}
+dat_long
+```
