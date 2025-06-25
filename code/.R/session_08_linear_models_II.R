@@ -48,7 +48,7 @@ p2 <- dat |>
   ggplot(aes(X,Y, color=Z)) +
   geom_jitter(size=2) + 
   theme_minimal()
-
+p2
 # the code below estimates two independent regression line (one for Z=1 and one for Z=0)
 # more on this code in later session on multilevel modeling
 # rerun this code if it gets you an error, the first time(s)
@@ -312,6 +312,12 @@ n <- 10000
 # Grades and athleticism are independent in the population
 grades <- rnorm(n, mean = 100, sd = 10)
 athleticism <- rnorm(n, mean = 100, sd = 10)
+
+min <- min(grades)
+max <- max(grades)
+grades <- runif(n, min=min, max=max)
+athleticism <- runif(n, min=min, max=max)
+cor(grades, athleticism)
 
 # Elite university admission depends on either being smart or athletic
 # Use a logistic model to determine admission probability
