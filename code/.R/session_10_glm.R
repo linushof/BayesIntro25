@@ -12,7 +12,6 @@ dat %>%
   ggplot(aes(logit, logistic)) +
   geom_line(size = 2)
 
-
 # prior selection for logistic regression ---------------------------------
 
 ## intercept 
@@ -59,7 +58,7 @@ dat %>%
 ## Simulation --------------------------------------------------------------
 
 N <- 1000 # number of applicants 
-G <- sample(1:2, size = N, replace = TRUE)
+G <- sample(1:2, size = N, replace = TRUE) # Gender as index
 D <- rbern(N, ifelse(G==1, .3, .8)) + 1 
 accept_rate <- matrix( c(.1, .3, .1, .3), nrow = 2) # without direct discrimination
 A <- rbern(N, accept_rate[D, G])
@@ -67,12 +66,13 @@ A <- rbern(N, accept_rate[D, G])
 table(G,D)
 table(G,A)
 
-dat <- list(A=A, D=D, G=G)
-
-
 # estimate total effect of G (ignore D)
 
-m1 <- ulam(
+##### index approach ######
+
+dat <- list(A=A, D=D, G=G)
+
+m1_index <- ulam(
   alist(
     # likelihood
     A ~ dbern(p) , 
@@ -84,12 +84,47 @@ m1 <- ulam(
   data=dat, 
   chains = 4, 
   cores = 4, 
-  file = "models/session_10_m1" # loads model fit file when previously fitted and stored
+  file = "models/session_10_m1_index" # loads model fit file when previously fitted and stored
 )
+traceplot(m1_index)
+precis(m1_index, depth = 2) 
 
-traceplot(m1)
-precis(m1, depth = 2) # coefficients on log odds scale
-plogis(coef(m1)) # interpret as probability 
+
+##### indicator (dummy) approach ######
+
+dat_indicator <- list(A=A, 
+                      D=D, 
+                      G=if_else(G==2,1,0) # gender as indicator (0/1)
+                      )
+
+
+m1_indicator <- ulam(
+  alist(
+    # likelihood
+    A ~ dbern(p) , 
+    logit(p) <- a + b*G  , 
+    
+    # priors
+    a ~ dnorm(0,1) , 
+    b ~ dnorm(0,1)
+    
+  ) , 
+  data=dat_indicator, 
+  chains = 4, 
+  cores = 4, 
+  file = "models/session_10_m1_indicator" # loads model fit file when previously fitted and stored
+)
+traceplot(m1_indicator)
+precis(m1_indicator, depth = 2) 
+
+# compare the estimates of the group means for index and indicator approach 
+
+coef(m1_index)[1] # mean Gender 1 
+coef(m1_indicator)[1] # mean Gender 1
+
+coef(m1_index)[2] # mean Gender 2 
+sum(coef(m1_indicator)) # mean Gender 2
+
 
 
 ## estimate direct effect of G (include D as covariate)
@@ -123,6 +158,7 @@ data("UCBadmit", "UCBadmit_long")
 dat_wide <- UCBadmit
 dat_long <- UCBadmit_long
 
+View(dat_long)
 
 dat <- list(
   A = dat_wide$admit , 
@@ -168,6 +204,7 @@ ggplot(posterior, aes(diff)) +
 
 ### estimate direct effect 
 
+
 m4 <- ulam(
   alist(
     # likelihood
@@ -194,6 +231,7 @@ PrA <- plogis(m4.post$a)
 
 diff_prob_D <- sapply(1:6, function(i) PrA[, 1, i] - PrA[, 2, i])
 diffs <- as.data.frame(diff_prob_D)
+dep <- paste0("D", 1:6)
 names(diffs) <- dep
 
 diffs |> 
@@ -202,3 +240,46 @@ diffs |>
   geom_density(alpha = .3, linewidth = 2) +
   labs(x="Admission Probability G1 - Admission Probability G2" , 
        y="Density")
+
+
+# Poisson -----------------------------------------------------------------
+
+
+dat <- tibble(x = -10:10, 
+       y = exp(x))
+plot(dat$x,dat$y, type="l")
+
+
+n <- 50
+x <- runif(n,-2,2)
+a <- 1
+b <- 2
+pred <- a + b*x
+y <- rpois(n, exp(pred))
+sim <- list(x=x,y=y)
+
+
+m5 <- ulam(
+  alist(
+    # likelihood
+    y ~ dpois(lambda) ,
+    log(lambda) <- a+b*x,
+    
+    # prior
+    a ~ dnorm(0, .5),
+    b ~ dnorm(0,.5)
+  ) , 
+  data = sim,
+  chains = 4,
+  cores = 4,
+  file = "models/session_10_m5"
+)
+precis(m5)
+
+# Exposure and offset
+
+
+
+
+
+
